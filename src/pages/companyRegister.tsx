@@ -1,0 +1,195 @@
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { CompanyStatus, registerCompany } from "../store/slices/companyListSlice";
+import { generateRandomId } from "../lib/utils/idGenerator";
+
+interface RegisterFormData {
+  username: string;
+  password: string;
+  email: string;
+  phone: string;
+  companyName: string;
+  companyAddress: string;
+}
+
+const CompanyRegister: React.FC = () => {
+  const [formData, setFormData] = useState<RegisterFormData>({
+    username: "",
+    password: "",
+    email: "",
+    phone: "",
+    companyName: "",
+    companyAddress: "",
+  });
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simulate registration API, then redirect to verification
+    setTimeout(() => {
+      dispatch(
+        registerCompany({
+          id: generateRandomId(),
+          username: formData.username,
+          name: formData.companyName,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.companyAddress,
+          password: formData.password,
+          status: CompanyStatus.INCOMPLETE
+        })
+      );
+      navigate("/company/email-verification");
+    }, 500);
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-xl bg-white p-8 rounded-xl shadow-lg">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+          Company User Registration
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Username
+            </label>
+            <input
+              type="text"
+              name="username"
+              id="username"
+              placeholder="Username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Phone
+            </label>
+            <input
+              type="tel"
+              name="phone"
+              id="phone"
+              placeholder="Phone"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="companyName"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Company Name
+            </label>
+            <input
+              type="text"
+              name="companyName"
+              id="companyName"
+              placeholder="Company Name"
+              value={formData.companyName}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="companyAddress"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Company Address
+            </label>
+            <textarea
+              name="companyAddress"
+              id="companyAddress"
+              placeholder="Company Address"
+              value={formData.companyAddress}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={3}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
+          >
+            Register
+          </button>
+        </form>
+        <p className="mt-4 text-center text-sm text-gray-500">
+          Already have an account?{" "}
+          <a href="/company/login" className="text-blue-600 hover:underline">
+            Login
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default CompanyRegister;
