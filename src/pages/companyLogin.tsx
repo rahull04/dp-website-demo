@@ -15,6 +15,7 @@ const CompanyLogin: React.FC = () => {
     email: "",
     password: "",
   });
+  const [displayErrorText, setDisplayErrorText] = useState(false);
 
   const companyList = useSelector(
     (state: RootState) => state.companyList.companies
@@ -29,6 +30,7 @@ const CompanyLogin: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setDisplayErrorText(false);
     console.log("Logging in with:", formData);
     const comp = companyList.find(
       (c) => c.email === formData.email && c.password === formData.password
@@ -48,8 +50,9 @@ const CompanyLogin: React.FC = () => {
       } else {
         navigate("/company/profile");
       }
+    } else {
+      setDisplayErrorText(true);
     }
-    // TODO: Replace with login API call
   };
 
   return (
@@ -97,6 +100,11 @@ const CompanyLogin: React.FC = () => {
             />
           </div>
 
+          {displayErrorText && (
+            <p className="text-sm text-red-600 mb-4 text-center">
+              Invalid credentials
+            </p>
+          )}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"

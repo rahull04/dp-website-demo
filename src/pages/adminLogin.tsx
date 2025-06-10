@@ -16,6 +16,7 @@ const AdminLogin: React.FC = () => {
     username: "",
     password: "",
   });
+  const [displayErrorText, setDisplayErrorText] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -26,11 +27,13 @@ const AdminLogin: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Logging in with:", formData);
+    setDisplayErrorText(false);
 
     if (formData.username === USERNAME && formData.password === PASSWORD) {
       navigate("/admin/dashboard");
       dispatch(login({ username: USERNAME, type: UserType.ADMIN }));
+    } else {
+      setDisplayErrorText(true);
     }
   };
 
@@ -78,7 +81,11 @@ const AdminLogin: React.FC = () => {
               required
             />
           </div>
-
+          {displayErrorText && (
+            <p className="text-sm text-red-600 mb-4 text-center">
+              Invalid credentials
+            </p>
+          )}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
