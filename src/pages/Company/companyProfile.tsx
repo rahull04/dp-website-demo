@@ -15,8 +15,8 @@ export const serviceOptions = [
 
 const ProgressStatus = {
   [CompanyStatus.INCOMPLETE]: 20,
-  [CompanyStatus.PENDING_REVIEW]: 80,
-  [CompanyStatus.REJECTED]: 50,
+  [CompanyStatus.PENDING_REVIEW]: 100,
+  [CompanyStatus.REJECTED]: 60,
 };
 
 const CompanyProfile: React.FC = () => {
@@ -54,13 +54,29 @@ const CompanyProfile: React.FC = () => {
                 Your company details are under review
               </span>
             )}
+            {formData.status === CompanyStatus.REJECTED && (
+              <span className="text-red-600">
+                Your company details were rejected. Please review and submit
+                again
+              </span>
+            )}
+            {formData.status === CompanyStatus.INCOMPLETE && (
+              <span className="text-orange-600">
+                Please make sure you submit all the details to use all the
+                features
+              </span>
+            )}
           </div>
         </div>
         <div className="flex">
           {formData.status !== CompanyStatus.APPROVED && (
             <Progress
               percent={ProgressStatus[formData.status]}
-              status="active"
+              status={
+                formData.status === CompanyStatus.PENDING_REVIEW
+                  ? "success"
+                  : "active"
+              }
               style={{ marginBottom: 20 }}
               size={{ height: 26 }}
             />

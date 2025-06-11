@@ -43,7 +43,7 @@ const companyListSlice = createSlice({
       action: PayloadAction<Omit<Company, "approved">>
     ) => {
       if (state.companies.find((c) => c.email === action.payload.email)) {
-        throw new Error("Company already exists");
+        throw new Error("Email associated with the company is already registered");
       }
       state.companies.push({ ...action.payload, approved: false });
     },

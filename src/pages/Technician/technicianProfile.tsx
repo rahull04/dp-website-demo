@@ -5,8 +5,15 @@ import { FaRegUser, FaUpload } from "react-icons/fa";
 import clsx from "clsx";
 import { ProfileInput } from "../../components/ProfileInput";
 import { useTechniciansProfile } from "../../hooks/useTechniciansProfile";
+import { Progress } from "antd";
 
 const skillOptions = ["NodeJS", "Java", "Python", "C++", "React", "Angular"];
+
+const ProgressStatus = {
+  [TechnicianStatus.INCOMPLETE]: 20,
+  [TechnicianStatus.PENDING_REVIEW]: 100,
+  [TechnicianStatus.REJECTED]: 60,
+};
 
 const TechnicianProfile: React.FC = () => {
   const {
@@ -29,21 +36,49 @@ const TechnicianProfile: React.FC = () => {
 
   const textItems = (
     <>
-      {technician.status === TechnicianStatus.INCOMPLETE && (
-        <p className="text-sm text-red-600 mb-4 text-center">
-          * All fields are mandatory.
-        </p>
-      )}
-      {technician.status === TechnicianStatus.PENDING_REVIEW && (
-        <p className="text-sm text-green-600 mb-4 text-center">
-          Your details are under review right now.
-        </p>
-      )}
-      {technician.status === TechnicianStatus.REJECTED && (
-        <p className="text-sm text-red-600 mb-4 text-center">
-          Your details were rejected. Please review and re-submit.
-        </p>
-      )}
+      <div className="flex justify-between">
+          <div>
+            {technician.status !== TechnicianStatus.APPROVED && (
+              <div className="text-[16px] text-slate-600 mb-2">
+                {ProgressStatus[technician.status]}% profile complete
+              </div>
+            )}
+          </div>
+          <div>
+            {" "}
+            {technician.status === TechnicianStatus.PENDING_REVIEW && (
+              <span className="text-green-600">
+                Your profile details are under review
+              </span>
+            )}
+            {technician.status === TechnicianStatus.REJECTED && (
+              <span className="text-red-600">
+                Your profile details were rejected. Please review and submit
+                again
+              </span>
+            )}
+            {technician.status === TechnicianStatus.INCOMPLETE && (
+              <span className="text-orange-600">
+                Please make sure you submit all the details to use all the
+                features
+              </span>
+            )}
+          </div>
+        </div>
+        <div className="flex">
+          {technician.status !== TechnicianStatus.APPROVED && (
+            <Progress
+              percent={ProgressStatus[technician.status]}
+              status={
+                technician.status === TechnicianStatus.PENDING_REVIEW
+                  ? "success"
+                  : "active"
+              }
+              style={{ marginBottom: 20 }}
+              size={{ height: 26 }}
+            />
+          )}
+        </div>
     </>
   );
 
