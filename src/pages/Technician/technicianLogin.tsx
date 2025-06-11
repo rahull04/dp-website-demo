@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import type { RootState } from "../store";
-import { login, UserType } from "../store/slices/authSlice";
-import { TechnicianStatus } from "../store/slices/technicianSlice";
+import type { RootState } from "../../store";
+import { login, UserType } from "../../store/slices/authSlice";
+import { TechnicianStatus } from "../../store/slices/technicianSlice";
 import { Button } from "antd";
 
 const TechnicianLogin: React.FC = () => {

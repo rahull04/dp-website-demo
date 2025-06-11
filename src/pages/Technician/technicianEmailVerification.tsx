@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { verifyTechnician } from "../store/slices/technicianSlice";
+import { verifyTechnician } from "../../store/slices/technicianSlice";
 
 const TechnicianEmailVerification: React.FC = () => {
   const navigate = useNavigate();

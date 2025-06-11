@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { verifyCompany } from "../store/slices/companyListSlice";
+import { verifyCompany } from "../../store/slices/companyListSlice";
 
 const CompanyEmailVerification: React.FC = () => {
   const navigate = useNavigate();

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {
   registerTechnician,
   TechnicianStatus,
-} from "../store/slices/technicianSlice";
+} from "../../store/slices/technicianSlice";
 import { Button } from "antd";
 
 const TechnicianRegister: React.FC = () => {

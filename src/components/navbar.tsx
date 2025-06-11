@@ -20,7 +20,6 @@ const Navbar = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    localStorage.removeItem("persist:root");
   };
 
   const loginMenu = {

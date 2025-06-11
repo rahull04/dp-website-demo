@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../store";
-import { addJob } from "../store/slices/jobSlice";
+import type { RootState } from "../../store";
+import { addJob } from "../../store/slices/jobSlice";
 import { Navigate } from "react-router-dom";
-import { CompanyStatus } from "../store/slices/companyListSlice";
-import { AuthenticatedLayout } from "../components/AuthenticatedLayout";
+import { CompanyStatus } from "../../store/slices/companyListSlice";
+import { AuthenticatedLayout } from "../../components/AuthenticatedLayout";
 import { Modal } from "antd";
 
 const CompanyDashboard: React.FC = () => {
@@ -97,7 +97,6 @@ const CompanyDashboard: React.FC = () => {
           )}
         </div>
 
-        {/* Modal */}
         {isModalOpen && (
           <Modal
             title="Post a Job"

@@ -1,9 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import type { RootState } from "../store";
+import type { RootState } from "../../store";
 import { Navigate } from "react-router-dom";
-import { TechnicianStatus } from "../store/slices/technicianSlice";
-import { AuthenticatedLayout } from "../components/AuthenticatedLayout";
+import { TechnicianStatus } from "../../store/slices/technicianSlice";
+import { AuthenticatedLayout } from "../../components/AuthenticatedLayout";
 
 const TechnicianDashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);

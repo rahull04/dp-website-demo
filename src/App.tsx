@@ -1,22 +1,22 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
-import CompanyRegister from "./pages/companyRegister";
-import CompanyLogin from "./pages/companyLogin";
-import AdminLogin from "./pages/adminLogin";
-import AdminDashboard from "./pages/adminDashboard";
-import CompanyEmailVerification from "./pages/companyEmailVerification";
+import CompanyRegister from "./pages/Company/companyRegister";
+import CompanyLogin from "./pages/Company/companyLogin";
+import CompanyEmailVerification from "./pages/Company/companyEmailVerification";
 import ProtectedRoute from "./components/ProtectedRoute";
-import CompanyProfile from "./pages/companyProfile";
-import CompanyDashboard from "./pages/companyDashboard";
-import TechnicianRegister from "./pages/technicianRegister";
-import TechnicianEmailVerification from "./pages/technicianEmailVerification";
-import TechnicianLogin from "./pages/technicianLogin";
-import TechnicianProfile from "./pages/technicianProfile";
-import TechnicianDashboard from "./pages/technicianDashboard";
-import Navbar from "./components/navbar";
+import CompanyProfile from "./pages/Company/companyProfile";
+import CompanyDashboard from "./pages/Company/companyDashboard";
+import TechnicianRegister from "./pages/Technician/technicianRegister";
+import TechnicianEmailVerification from "./pages/Technician/technicianEmailVerification";
+import TechnicianLogin from "./pages/Technician/technicianLogin";
+import TechnicianProfile from "./pages/Technician/technicianProfile";
+import TechnicianDashboard from "./pages/Technician/technicianDashboard";
+import Navbar from "./components/Navbar";
 import { useSelector } from "react-redux";
 import type { RootState } from "./store";
+import AdminDashboard from "./pages/Admin/adminDashboard";
+import AdminLogin from "./pages/Admin/adminLogin";
 
 function App() {
   const isAuthenticated = useSelector(

@@ -1,25 +1,26 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../store";
+import type { RootState } from "../../store";
 import {
   approveCompany,
   CompanyStatus,
   rejectCompany,
   type Company,
-} from "../store/slices/companyListSlice";
+} from "../../store/slices/companyListSlice";
 import {
   approveTechnician,
   rejectTechnician,
   TechnicianStatus,
   type Technician,
-} from "../store/slices/technicianSlice";
-import { AuthenticatedLayout } from "../components/AuthenticatedLayout";
-import { ViewCompanyModal } from "../components/ViewCompanyModal";
-import { ViewTechnicianModal } from "../components/ViewTechnicianModal";
-import { Modal } from "antd";
+} from "../../store/slices/technicianSlice";
+import { AuthenticatedLayout } from "../../components/AuthenticatedLayout";
+import { ViewCompanyModal } from "../../components/ViewCompanyModal";
+import { ViewTechnicianModal } from "../../components/ViewTechnicianModal";
+import { Badge, Modal } from "antd";
 import Swal from "sweetalert2";
-import { PendingTechnicianItem } from "../components/PendingTechnicianItem";
-import { PendingCompanyItem } from "../components/PendingCompanyItem";
+import { PendingTechnicianItem } from "../../components/PendingTechnicianItem";
+import { PendingCompanyItem } from "../../components/PendingCompanyItem";
+import { StatsCard } from "../../components/StatsCard";
 
 const AdminDashboard: React.FC = () => {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
@@ -31,12 +32,18 @@ const AdminDashboard: React.FC = () => {
   } | null>(null);
   const [selectedTechnician, setSelectedTechnician] =
     useState<Technician | null>(null);
-  const pendingCompanies = useSelector(
+  const companies = useSelector(
     (state: RootState) => state.companyList.companies
-  ).filter((c) => c.status === CompanyStatus.PENDING_REVIEW);
-  const pendingTechnicians = useSelector(
+  );
+  const pendingCompanies = companies.filter(
+    (c) => c.status === CompanyStatus.PENDING_REVIEW
+  );
+  const technicians = useSelector(
     (state: RootState) => state.technician.technicians
-  ).filter((c) => c.status === TechnicianStatus.PENDING_REVIEW);
+  );
+  const pendingTechnicians = technicians.filter(
+    (c) => c.status === TechnicianStatus.PENDING_REVIEW
+  );
 
   const dispatch = useDispatch();
 
@@ -65,16 +72,25 @@ const AdminDashboard: React.FC = () => {
       <>
         {" "}
         <div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <StatsCard />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
             {/* Pending Companies */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            <div className="bg-white rounded-lg shadow-md p-6 h-fit">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 flex justify-between">
                 Pending Companies
+                {!!pendingCompanies.length && (
+                  <Badge count={pendingCompanies.length} />
+                )}
               </h2>
               {pendingCompanies.length === 0 ? (
-                <p className="text-gray-500">No pending companies.</p>
+                <p
+                  className="text-gray-500"
+                  style={{ marginTop: 16, paddingTop: 66, paddingBottom: 66 }}
+                >
+                  No pending companies.
+                </p>
               ) : (
-                <ul className="space-y-4">
+                <ul className="space-y-4 min-h-[40vh] max-h-[100vh] overflow-y-auto">
                   {pendingCompanies.map((company) => (
                     <PendingCompanyItem
                       key={company.username}
@@ -88,22 +104,22 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             {/* Pending Technicians */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2
-                style={{ marginBottom: 0 }}
-                className="text-xl font-semibold text-gray-800 mb-4"
-              >
+            <div className="bg-white rounded-lg shadow-md p-6 h-fit">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 flex justify-between">
                 Pending Technicians
+                {!!pendingTechnicians.length && (
+                  <Badge count={pendingTechnicians.length} />
+                )}
               </h2>
               {pendingTechnicians.length === 0 ? (
                 <p
                   className="text-gray-500 text-center"
-                  style={{ marginTop: 16 }}
+                  style={{ marginTop: 16, paddingTop: 66, paddingBottom: 66 }}
                 >
                   No pending technicians.
                 </p>
               ) : (
-                <ul className="space-y-4">
+                <ul className="space-y-4 h-[100vh] overflow-y-auto">
                   {pendingTechnicians.map((technician) => (
                     <PendingTechnicianItem
                       key={technician.username}

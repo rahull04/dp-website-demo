@@ -1,29 +1,26 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../store";
-import { login, UserType } from "../store/slices/authSlice";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { CompanyStatus } from "../store/slices/companyListSlice";
 import { Button } from "antd";
+import { login, UserType } from "../../store/slices/authSlice";
 
 interface LoginFormData {
-  email: string;
+  username: string;
   password: string;
 }
 
-const CompanyLogin: React.FC = () => {
+const USERNAME = "admin001";
+const PASSWORD = "admin123";
+
+const AdminLogin: React.FC = () => {
   const [formData, setFormData] = useState<LoginFormData>({
-    email: "",
+    username: "",
     password: "",
   });
-  const [displayErrorText, setDisplayErrorText] = useState("");
-
-  const companyList = useSelector(
-    (state: RootState) => state.companyList.companies
-  );
-
-  const dispatch = useDispatch();
+  const [displayErrorText, setDisplayErrorText] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -31,30 +28,12 @@ const CompanyLogin: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setDisplayErrorText("Invalid credentials");
-    const comp = companyList.find(
-      (c) => c.email === formData.email && c.password === formData.password
-    );
-    if (comp && !comp.isVerified) {
-      setDisplayErrorText("Email verification is incomplete for your account");
-      return;
-    }
-    if (comp) {
-      dispatch(
-        login({
-          username: comp.username,
-          email: comp.email,
-          type: UserType.COMPANY,
-        })
-      );
-
-      if (comp.status === CompanyStatus.APPROVED) {
-        navigate("/company/dashboard");
-      } else {
-        navigate("/company/profile");
-      }
+    setDisplayErrorText(false);
+    if (formData.username === USERNAME && formData.password === PASSWORD) {
+      navigate("/admin/dashboard");
+      dispatch(login({ username: USERNAME, type: UserType.ADMIN }));
     } else {
-      setDisplayErrorText("Invalid credentials");
+      setDisplayErrorText(true);
     }
   };
 
@@ -62,28 +41,27 @@ const CompanyLogin: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Company Login
+          Login as Admin
         </h2>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label
-              htmlFor="email"
+              htmlFor="username"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Email
+              Username
             </label>
             <input
-              type="email"
-              name="email"
-              id="email"
-              placeholder="Enter your email"
-              value={formData.email}
+              type="text"
+              name="username"
+              id="username"
+              placeholder="Enter your username"
+              value={formData.username}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
-
           <div>
             <label
               htmlFor="password"
@@ -102,29 +80,25 @@ const CompanyLogin: React.FC = () => {
               required
             />
           </div>
-
           {displayErrorText && (
             <p
               style={{ marginBottom: 4 }}
-              className="text-sm text-red-600 mb-3 text-center"
+              className="text-sm text-red-600 mb-4 text-center"
             >
-              {displayErrorText}
+              Invalid credentials
             </p>
           )}
           <Button htmlType="submit" type="primary" className="w-full py-2">
             Login
           </Button>
+          <div className="space-y-1 mt-4">
+            <div className="text-sm text-gray-500 text-center">Username: <span className="font-bold">{USERNAME}</span></div>
+            <div className="text-sm text-gray-500 text-center">Password: <span className="font-bold">{PASSWORD}</span></div>
+        </div>
         </form>
-        <br />
-        <p className="mt-8 text-center text-sm text-gray-500">
-          Don't have an account?{" "}
-          <a href="/company/register" className="text-blue-600 hover:underline">
-            Register
-          </a>
-        </p>
       </div>
     </div>
   );
 };
 
-export default CompanyLogin;
+export default AdminLogin;

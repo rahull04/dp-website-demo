@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import {
   CompanyStatus,
   registerCompany,
-} from "../store/slices/companyListSlice";
-import { generateRandomId } from "../lib/utils/idGenerator";
+} from "../../store/slices/companyListSlice";
+import { generateRandomId } from "../../lib/utils/idGenerator";
 import { Button } from "antd";
 
 interface RegisterFormData {
@@ -18,6 +18,7 @@ interface RegisterFormData {
 }
 
 const CompanyRegister: React.FC = () => {
+  const [displayErrorText, setDisplayErrorText] = useState("");
   const [formData, setFormData] = useState<RegisterFormData>({
     username: "",
     password: "",
@@ -39,24 +40,27 @@ const CompanyRegister: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate registration API, then redirect to verification
-    setTimeout(() => {
-      dispatch(
-        registerCompany({
-          id: generateRandomId(),
-          username: formData.username,
-          name: formData.companyName,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.companyAddress,
-          password: formData.password,
-          status: CompanyStatus.INCOMPLETE,
-        })
-      );
-      navigate(
-        `/company/email-verification/${encodeURIComponent(formData.email)}`
-      );
-    }, 500);
+    try {
+      setTimeout(() => {
+        dispatch(
+          registerCompany({
+            id: generateRandomId(),
+            username: formData.username,
+            name: formData.companyName,
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.companyAddress,
+            password: formData.password,
+            status: CompanyStatus.INCOMPLETE,
+          })
+        );
+        navigate(
+          `/company/email-verification/${encodeURIComponent(formData.email)}`
+        );
+      }, 500);
+    } catch (e: unknown) {
+      setDisplayErrorText((e as { message: string }).message);
+    }
   };
 
   return (
@@ -185,6 +189,12 @@ const CompanyRegister: React.FC = () => {
               />
             </div>
           </div>
+
+          {displayErrorText && (
+            <p className="text-sm text-red-600 text-center">
+              {displayErrorText}
+            </p>
+          )}
 
           <Button
             style={{ marginBottom: 12 }}
