@@ -12,7 +12,7 @@ import TechnicianEmailVerification from "./pages/Technician/technicianEmailVerif
 import TechnicianLogin from "./pages/Technician/technicianLogin";
 import TechnicianProfile from "./pages/Technician/technicianProfile";
 import TechnicianDashboard from "./pages/Technician/technicianDashboard";
-import Navbar from "./components/Navbar";
+import {Navbar} from "./components/Navbar";
 import { useSelector } from "react-redux";
 import type { RootState } from "./store";
 import AdminDashboard from "./pages/Admin/adminDashboard";

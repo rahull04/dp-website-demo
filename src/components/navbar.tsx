@@ -7,7 +7,7 @@ import { logout } from "../store/slices/authSlice";
 
 const { Header } = Layout;
 
-const Navbar = () => {
+export const Navbar = () => {
   const dispatch = useDispatch();
 
   const userName = useSelector((state: RootState) => state.auth.user?.username);
@@ -123,5 +123,3 @@ const Navbar = () => {
     </Header>
   );
 };
-
-export default Navbar;

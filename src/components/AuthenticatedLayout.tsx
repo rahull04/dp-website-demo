@@ -8,7 +8,7 @@ import { MdDashboard } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { Breadcrumb } from "antd";
 import { CompanyStatus } from "../store/slices/companyListSlice";
-import Navbar from "./Navbar";
+import {Navbar} from "./Navbar";
 
 const MENU_ITEMS = [
   {
