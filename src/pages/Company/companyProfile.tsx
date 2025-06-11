@@ -1,10 +1,9 @@
 import React from "react";
-import {
-  CompanyStatus,
-} from "../../store/slices/companyListSlice";
+import { CompanyStatus } from "../../store/slices/companyListSlice";
 import { AuthenticatedLayout } from "../../components/AuthenticatedLayout";
 import { ProfileInput } from "../../components/ProfileInput";
 import { useCompanyProfile } from "../../hooks/useCompanyProfile";
+import { Progress } from "antd";
 
 export const serviceOptions = [
   "Web Design",
@@ -14,9 +13,15 @@ export const serviceOptions = [
   "IT Support",
 ];
 
+const ProgressStatus = {
+  [CompanyStatus.INCOMPLETE]: 20,
+  [CompanyStatus.PENDING_REVIEW]: 80,
+  [CompanyStatus.REJECTED]: 50,
+};
+
 const CompanyProfile: React.FC = () => {
   const {
-    formData,   
+    formData,
     formDataLocal,
     logoPreview,
     imagePreview,
@@ -34,21 +39,33 @@ const CompanyProfile: React.FC = () => {
   return (
     <AuthenticatedLayout>
       <div className=" mx-auto bg-white rounded-xl p-8">
-        {formData.status === CompanyStatus.INCOMPLETE && (
-          <p className="text-lg text-red-600 mb-4 text-center">
-            * All fields are mandatory including service types and file uploads.
-          </p>
-        )}
-        {formData.status === CompanyStatus.PENDING_REVIEW && (
-          <p className="text-green-600 mb-4 text-center text-lg">
-            Your company details are under review right now.
-          </p>
-        )}
-        {formData.status === CompanyStatus.REJECTED && (
-          <p className="text-lg text-red-600 mb-4 text-center">
-            Your company details were rejected. Please review and re-submit.
-          </p>
-        )}
+        <div className="flex justify-between">
+          <div>
+            {formData.status !== CompanyStatus.APPROVED && (
+              <div className="text-[16px] text-slate-600 mb-2">
+                {ProgressStatus[formData.status]}% profile complete
+              </div>
+            )}
+          </div>
+          <div>
+            {" "}
+            {formData.status === CompanyStatus.PENDING_REVIEW && (
+              <span className="text-green-600">
+                Your company details are under review
+              </span>
+            )}
+          </div>
+        </div>
+        <div className="flex">
+          {formData.status !== CompanyStatus.APPROVED && (
+            <Progress
+              percent={ProgressStatus[formData.status]}
+              status="active"
+              style={{ marginBottom: 20 }}
+              size={{ height: 26 }}
+            />
+          )}
+        </div>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

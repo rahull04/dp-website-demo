@@ -41,23 +41,21 @@ const CompanyRegister: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      setTimeout(() => {
-        dispatch(
-          registerCompany({
-            id: generateRandomId(),
-            username: formData.username,
-            name: formData.companyName,
-            email: formData.email,
-            phone: formData.phone,
-            address: formData.companyAddress,
-            password: formData.password,
-            status: CompanyStatus.INCOMPLETE,
-          })
-        );
-        navigate(
-          `/company/email-verification/${encodeURIComponent(formData.email)}`
-        );
-      }, 500);
+      dispatch(
+        registerCompany({
+          id: generateRandomId(),
+          username: formData.username,
+          name: formData.companyName,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.companyAddress,
+          password: formData.password,
+          status: CompanyStatus.INCOMPLETE,
+        })
+      );
+      navigate(
+        `/company/email-verification/${encodeURIComponent(formData.email)}`
+      );
     } catch (e: unknown) {
       setDisplayErrorText((e as { message: string }).message);
     }
