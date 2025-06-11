@@ -302,20 +302,21 @@ const CompanyProfile: React.FC = () => {
           </div>
 
           {/* Submit Button */}
-          {formData.status !== CompanyStatus.APPROVED && formData.status !== CompanyStatus.PENDING_REVIEW && (
-            <button
-              type="submit"
-              disabled={!isFormValid}
-              style={{ color: isFormValid ? "white" : "#6a7282" }}
-              className={`w-full py-3 rounded-md text-lg font-semibold transition cursor-pointer ${
-                isFormValid
-                  ? "bg-blue-600 hover:bg-blue-700"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              }`}
-            >
-              Submit Profile
-            </button>
-          )}
+          {formData.status !== CompanyStatus.APPROVED &&
+            formData.status !== CompanyStatus.PENDING_REVIEW && (
+              <button
+                type="submit"
+                disabled={!isFormValid}
+                style={{ color: isFormValid ? "white" : "#6a7282" }}
+                className={`w-full py-3 rounded-md text-lg font-semibold transition cursor-pointer ${
+                  isFormValid
+                    ? "bg-blue-600 hover:bg-blue-700"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                Submit Profile
+              </button>
+            )}
         </form>
       </div>
     </AuthenticatedLayout>

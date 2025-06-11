@@ -23,11 +23,13 @@ const TechnicianDashboard: React.FC = () => {
   return (
     <AuthenticatedLayout>
       <div className="max-w-6xl mx-auto">
-        {jobs.length !== 0 && <div className="mb-8">
-          <p className="text-gray-600 mt-2 text-center">
-            Browse and apply for available job postings
-          </p>
-        </div>}
+        {jobs.length !== 0 && (
+          <div className="mb-8">
+            <p className="text-gray-600 mt-2 text-center">
+              Browse and apply for available job postings
+            </p>
+          </div>
+        )}
 
         {jobs.length === 0 ? (
           <div className="text-center text-gray-500 mt-20">

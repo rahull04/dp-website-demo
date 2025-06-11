@@ -67,9 +67,7 @@ export const ViewTechnicianModal = ({
         />
       </label>
       <div>
-        <label className="font-semibold text-gray-700 mb-2 block">
-          Skills
-        </label>
+        <label className="font-semibold text-gray-700 mb-2 block">Skills</label>
         <div className="flex">
           {technician.skills?.map((skill, i) => (
             <Tag color={TAG_COLORS[i]}>{skill}</Tag>

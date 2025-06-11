@@ -1,9 +1,9 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export enum UserType {
-    ADMIN,
-    COMPANY,
-    TECHINICIAN
+  ADMIN,
+  COMPANY,
+  TECHINICIAN,
 }
 
 interface AuthState {
@@ -11,7 +11,7 @@ interface AuthState {
   user: {
     email?: string;
     username?: string;
-    type: UserType
+    type: UserType;
   } | null;
 }
 
@@ -21,10 +21,10 @@ const initialState: AuthState = {
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
-    login(state, action: PayloadAction<AuthState['user']>) {
+    login(state, action: PayloadAction<AuthState["user"]>) {
       state.isAuthenticated = true;
       state.user = action.payload;
     },

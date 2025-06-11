@@ -11,8 +11,8 @@ const TechnicianEmailVerification: React.FC = () => {
 
   const handleVerify = () => {
     setVerified(true);
-    if(params.email) {
-      dispatch(verifyTechnician(params.email))
+    if (params.email) {
+      dispatch(verifyTechnician(params.email));
     }
     setTimeout(() => {
       navigate("/technician/login");

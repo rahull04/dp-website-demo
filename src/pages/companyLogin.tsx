@@ -33,11 +33,9 @@ const CompanyLogin: React.FC = () => {
     e.preventDefault();
     setDisplayErrorText("Invalid credentials");
     const comp = companyList.find(
-      (c) =>
-        c.email === formData.email &&
-        c.password === formData.password
+      (c) => c.email === formData.email && c.password === formData.password
     );
-    if(comp && !comp.isVerified) {
+    if (comp && !comp.isVerified) {
       setDisplayErrorText("Email verification is incomplete for your account");
       return;
     }

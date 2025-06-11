@@ -77,11 +77,11 @@ const AdminDashboard: React.FC = () => {
                 <ul className="space-y-4">
                   {pendingCompanies.map((company) => (
                     <PendingCompanyItem
-                    key={company.username}
-                    company={company}
-                    setSelectedCompany={setSelectedCompany}
-                    setShowConfirmatoryModal={setShowConfirmatoryModal}
-                  />
+                      key={company.username}
+                      company={company}
+                      setSelectedCompany={setSelectedCompany}
+                      setShowConfirmatoryModal={setShowConfirmatoryModal}
+                    />
                   ))}
                 </ul>
               )}

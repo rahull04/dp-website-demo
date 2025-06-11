@@ -36,7 +36,7 @@ const technicianSlice = createSlice({
       state,
       action: PayloadAction<Omit<Technician, "isVerified">>
     ) => {
-      if(state.technicians.find(c => c.email === action.payload.email)) {
+      if (state.technicians.find((c) => c.email === action.payload.email)) {
         throw new Error("Technician already exists");
       }
       const newTech: Technician = {

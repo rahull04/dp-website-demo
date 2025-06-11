@@ -22,7 +22,7 @@ const jobSlice = createSlice({
   initialState,
   reducers: {
     addJob: (state, action: PayloadAction<Job>) => {
-        state.jobs.unshift(action.payload);
+      state.jobs.unshift(action.payload);
     },
     setJobs: (state, action: PayloadAction<Job[]>) => {
       state.jobs = action.payload;

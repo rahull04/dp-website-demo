@@ -31,7 +31,7 @@ const TechnicianLogin: React.FC = () => {
         c.username === credentials.username &&
         c.password === credentials.password
     );
-    if(tech && !tech.isVerified) {
+    if (tech && !tech.isVerified) {
       setDisplayErrorText("Email verification is incomplete for your account");
       return;
     }
