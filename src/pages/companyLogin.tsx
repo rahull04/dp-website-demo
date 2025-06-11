@@ -32,7 +32,6 @@ const CompanyLogin: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setDisplayErrorText("Invalid credentials");
-    console.log("Logging in with:", formData);
     const comp = companyList.find(
       (c) =>
         c.email === formData.email &&

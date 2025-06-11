@@ -85,7 +85,7 @@ export const AuthenticatedLayout = ({
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className="w-60 bg-[#001529] flex flex-col px-[1px] pt-2">
+        <div className="w-60 bg-white flex flex-col px-2 pt-6">
           {sidebarItems.map((item) => {
             const selected = location.pathname.includes(item.route);
             if (
@@ -100,10 +100,10 @@ export const AuthenticatedLayout = ({
                 key={item.label}
                 onClick={() => navigate(item.route)}
                 className={clsx(
-                  "flex w-full p-3 px-5 items-center cursor-pointer",
-                  selected && "bg-white"
+                  "flex w-full p-3 px-5 items-center cursor-pointer rounded-sm",
+                  selected && "bg-[#5D87FF]"
                 )}
-                style={{ color: selected ? "black" : "white" }}
+                style={{ color: selected ? "white" : "black" }}
               >
                 <span className="mr-2">{item.icon}</span> {item.label}
               </div>
@@ -111,7 +111,7 @@ export const AuthenticatedLayout = ({
           })}
         </div>
 
-        <div className="flex-1 bg-white p-5 overflow-y-auto">
+        <div className="flex-1 bg-gray-100 p-5 overflow-y-auto">
           <Breadcrumb
             items={breadCrumbs.map((b) => ({
               title: b,

@@ -18,6 +18,8 @@ import { ViewCompanyModal } from "../components/ViewCompanyModal";
 import { ViewTechnicianModal } from "../components/ViewTechnicianModal";
 import { Modal } from "antd";
 import Swal from "sweetalert2";
+import { PendingTechnicianItem } from "../components/PendingTechnicianItem";
+import { PendingCompanyItem } from "../components/PendingCompanyItem";
 
 const AdminDashboard: React.FC = () => {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
@@ -39,23 +41,23 @@ const AdminDashboard: React.FC = () => {
   const dispatch = useDispatch();
 
   const handleApprove = (type: "company" | "technician", id: string) => {
-    const entity = type.charAt(0).toUpperCase() + type.slice(1)
+    const entity = type.charAt(0).toUpperCase() + type.slice(1);
     if (type === "company") {
       dispatch(approveCompany(id));
     } else {
       dispatch(approveTechnician(id));
     }
-    Swal.fire({title: `${entity} approved successfully!`, icon: "success"},);
+    Swal.fire({ title: `${entity} approved successfully!`, icon: "success" });
   };
 
   const handleReject = (type: "company" | "technician", id: string) => {
-    const entity = type.charAt(0).toUpperCase() + type.slice(1)
+    const entity = type.charAt(0).toUpperCase() + type.slice(1);
     if (type === "company") {
       dispatch(rejectCompany(id));
     } else {
       dispatch(rejectTechnician(id));
     }
-    Swal.fire({title: `${entity} rejected successfully!`, icon: "error"},);
+    Swal.fire({ title: `${entity} rejected successfully!`, icon: "error" });
   };
 
   return (
@@ -74,60 +76,12 @@ const AdminDashboard: React.FC = () => {
               ) : (
                 <ul className="space-y-4">
                   {pendingCompanies.map((company) => (
-                    <li
-                      key={company.id}
-                      className="border p-4 rounded-md shadow-sm bg-gray-50"
-                    >
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <p
-                            style={{ marginBottom: 0 }}
-                            className="font-medium"
-                          >
-                            {company.name}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {company.email}
-                          </p>
-                        </div>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => setSelectedCompany(company)}
-                            className="text-blue-600 hover:underline text-sm cursor-pointer"
-                          >
-                            View Profile
-                          </button>
-                          <button
-                            onClick={() =>
-                              setShowConfirmatoryModal({
-                                text: "Are you sure you want to approve this company?",
-                                type: "approve",
-                                entityId: company.id,
-                                entityType: "company",
-                              })
-                            }
-                            style={{ color: "white" }}
-                            className="bg-green-500 cursor-pointer hover:bg-green-600 text-white text-sm px-3 py-1 rounded"
-                          >
-                            Approve
-                          </button>
-                          <button
-                            onClick={() =>
-                              setShowConfirmatoryModal({
-                                text: "Are you sure you want to reject this company?",
-                                type: "reject",
-                                entityId: company.id,
-                                entityType: "company",
-                              })
-                            }
-                            style={{ color: "white" }}
-                            className="bg-[#ff4d4f] cursor-pointer hover:bg-red-600 text-white text-sm px-3 py-1 rounded"
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      </div>
-                    </li>
+                    <PendingCompanyItem
+                    key={company.username}
+                    company={company}
+                    setSelectedCompany={setSelectedCompany}
+                    setShowConfirmatoryModal={setShowConfirmatoryModal}
+                  />
                   ))}
                 </ul>
               )}
@@ -151,56 +105,12 @@ const AdminDashboard: React.FC = () => {
               ) : (
                 <ul className="space-y-4">
                   {pendingTechnicians.map((technician) => (
-                    <li
+                    <PendingTechnicianItem
                       key={technician.username}
-                      className="border p-4 rounded-md shadow-sm bg-gray-50"
-                    >
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <p className="font-medium"
-                            style={{ marginBottom: 0 }}>{technician.username}</p>
-                          <p className="text-sm text-gray-500">
-                            {technician.email}
-                          </p>
-                        </div>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => setSelectedTechnician(technician)}
-                            className="text-blue-600 hover:underline text-sm cursor-pointer"
-                          >
-                            View Profile
-                          </button>
-                          <button
-                            style={{ color: "white" }}
-                            onClick={() =>
-                              setShowConfirmatoryModal({
-                                text: "Are you sure you want to approve this technician?",
-                                type: "approve",
-                                entityId: technician.username,
-                                entityType: "technician",
-                              })
-                            }
-                            className="bg-green-500 cursor-pointer hover:bg-green-600 text-white text-sm px-3 py-1 rounded"
-                          >
-                            Approve
-                          </button>
-                          <button
-                            style={{ color: "white" }}
-                            onClick={() =>
-                              setShowConfirmatoryModal({
-                                text: "Are you sure you want to reject this technician?",
-                                type: "reject",
-                                entityId: technician.username,
-                                entityType: "technician",
-                              })
-                            }
-                            className="bg-[#ff4d4f] cursor-pointer hover:bg-red-600 text-white text-sm px-3 py-1 rounded"
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      </div>
-                    </li>
+                      technician={technician}
+                      setSelectedTechnician={setSelectedTechnician}
+                      setShowConfirmatoryModal={setShowConfirmatoryModal}
+                    />
                   ))}
                 </ul>
               )}
@@ -242,7 +152,10 @@ const AdminDashboard: React.FC = () => {
               }
               setShowConfirmatoryModal(null);
             }}
-            okText={showConfirmatoryModal.type.charAt(0).toUpperCase() + showConfirmatoryModal.type.slice(1)}
+            okText={
+              showConfirmatoryModal.type.charAt(0).toUpperCase() +
+              showConfirmatoryModal.type.slice(1)
+            }
           ></Modal>
         )}
       </>

@@ -69,7 +69,7 @@ const TechnicianDashboard: React.FC = () => {
 
                   <button
                     style={{ color: "white" }}
-                    className="mt-4 bg-blue-600 py-1 px-8 rounded-md hover:bg-blue-700 transition self-start"
+                    className="mt-4 bg-[#5D87FF] cursor-pointer py-1 px-8 rounded-md hover:bg-blue-700 transition self-start"
                     onClick={() => {}}
                   >
                     Apply
