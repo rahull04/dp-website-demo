@@ -5,7 +5,7 @@ export enum CompanyStatus {
   INCOMPLETE,
   PENDING_REVIEW,
   APPROVED,
-  REJECTED
+  REJECTED,
 }
 
 export interface Company {
@@ -18,6 +18,7 @@ export interface Company {
   password: string;
   status: CompanyStatus;
   approved: boolean;
+  isVerified?: boolean;
   operationHours?: string;
   numberOfEmployees?: string;
   serviceTypes?: string[];
@@ -41,6 +42,9 @@ const companyListSlice = createSlice({
       state,
       action: PayloadAction<Omit<Company, "approved">>
     ) => {
+      if(state.companies.find(c => c.email === action.payload.email)) {
+        throw new Error("Company already exists");
+      }
       state.companies.push({ ...action.payload, approved: false });
     },
     approveCompany: (state, action: PayloadAction<string>) => {
@@ -69,19 +73,29 @@ const companyListSlice = createSlice({
     ) => {
       const { email, ...rest } = action.payload;
       const index = state.companies.findIndex((c) => c.email === email);
-    
+
       if (index !== -1) {
         state.companies[index] = {
           ...state.companies[index],
           ...rest,
-          status: CompanyStatus.PENDING_REVIEW
+          status: CompanyStatus.PENDING_REVIEW,
         };
       }
-    }
-    
+    },
+    verifyCompany: (state, action: PayloadAction<string>) => {
+      const tech = state.companies.find((t) => t.email === action.payload);
+      if (tech) {
+        tech.isVerified = true;
+      }
+    },
   },
 });
 
-export const { registerCompany, approveCompany, rejectCompany, submitProfile } =
-  companyListSlice.actions;
+export const {
+  registerCompany,
+  approveCompany,
+  rejectCompany,
+  submitProfile,
+  verifyCompany,
+} = companyListSlice.actions;
 export default companyListSlice.reducer;

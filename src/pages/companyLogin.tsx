@@ -4,6 +4,7 @@ import type { RootState } from "../store";
 import { login, UserType } from "../store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import { CompanyStatus } from "../store/slices/companyListSlice";
+import { Button } from "antd";
 
 interface LoginFormData {
   email: string;
@@ -15,7 +16,7 @@ const CompanyLogin: React.FC = () => {
     email: "",
     password: "",
   });
-  const [displayErrorText, setDisplayErrorText] = useState(false);
+  const [displayErrorText, setDisplayErrorText] = useState("");
 
   const companyList = useSelector(
     (state: RootState) => state.companyList.companies
@@ -30,12 +31,17 @@ const CompanyLogin: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setDisplayErrorText(false);
+    setDisplayErrorText("Invalid credentials");
     console.log("Logging in with:", formData);
     const comp = companyList.find(
-      (c) => c.email === formData.email && c.password === formData.password
+      (c) =>
+        c.email === formData.email &&
+        c.password === formData.password
     );
-    console.log("Login success:", companyList);
+    if(comp && !comp.isVerified) {
+      setDisplayErrorText("Email verification is incomplete for your account");
+      return;
+    }
     if (comp) {
       dispatch(
         login({
@@ -51,7 +57,7 @@ const CompanyLogin: React.FC = () => {
         navigate("/company/profile");
       }
     } else {
-      setDisplayErrorText(true);
+      setDisplayErrorText("Invalid credentials");
     }
   };
 
@@ -59,7 +65,7 @@ const CompanyLogin: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Login to Your Company Account
+          Company Login
         </h2>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
@@ -101,18 +107,19 @@ const CompanyLogin: React.FC = () => {
           </div>
 
           {displayErrorText && (
-            <p className="text-sm text-red-600 mb-4 text-center">
-              Invalid credentials
+            <p
+              style={{ marginBottom: 4 }}
+              className="text-sm text-red-600 mb-3 text-center"
+            >
+              {displayErrorText}
             </p>
           )}
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
-          >
+          <Button htmlType="submit" type="primary" className="w-full py-2">
             Login
-          </button>
+          </Button>
         </form>
-        <p className="mt-4 text-center text-sm text-gray-500">
+        <br />
+        <p className="mt-8 text-center text-sm text-gray-500">
           Don't have an account?{" "}
           <a href="/company/register" className="text-blue-600 hover:underline">
             Register

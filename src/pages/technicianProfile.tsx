@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store";
 import { toBase64 } from "../lib/utils/imageUtils";
-import { submitTechnicianProfile, TechnicianStatus } from "../store/slices/technicianSlice";
+import {
+  submitTechnicianProfile,
+  TechnicianStatus,
+} from "../store/slices/technicianSlice";
+import { AuthenticatedLayout } from "../components/AuthenticatedLayout";
+import Swal from "sweetalert2";
+import { FaRegUser, FaUpload } from "react-icons/fa";
+import clsx from "clsx";
 
 const skillOptions = ["NodeJS", "Java", "Python", "C++", "React", "Angular"];
 
 const TechnicianProfile: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
-  const technician = useSelector((state: RootState) => state.technician.technicians).find(t => t.username === user?.username);
+  const technician = useSelector(
+    (state: RootState) => state.technician.technicians
+  ).find((t) => t.username === user?.username);
   const dispatch = useDispatch();
 
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -21,9 +30,21 @@ const TechnicianProfile: React.FC = () => {
     phone: technician?.phone || "",
     address: technician?.address || "",
     photo: null as File | null,
-    skills: technician?.skills ?? [] as string[],
+    skills: technician?.skills ?? ([] as string[]),
     certificates: [] as File[],
   });
+
+  useEffect(() => {
+    if (technician?.photo) {
+      setPhotoPreview(technician.photo);
+    }
+  }, [technician?.photo]);
+
+  useEffect(() => {
+    if (technician?.certificates) {
+      setCertificatePreviews(technician.certificates);
+    }
+  }, [technician?.certificates]);
 
   if (!technician) {
     return null;
@@ -46,10 +67,16 @@ const TechnicianProfile: React.FC = () => {
       }
 
       if (name === "certificates") {
-        const fileArray = Array.from(files);
-        const previews = fileArray.map((file) => URL.createObjectURL(file));
-        setCertificatePreviews(previews);
-        setFormData((prev) => ({ ...prev, certificates: fileArray }));
+        const files = Array.from(e.target.files || []);
+        const remainingSlots = 3 - certificatePreviews.length;
+
+        const selectedFiles = files.slice(0, remainingSlots);
+        const newPreviews = selectedFiles.map((file) =>
+          URL.createObjectURL(file)
+        );
+
+        setCertificatePreviews((prev) => [...prev, ...newPreviews]);
+        setFormData((prev) => ({ ...prev, certificates: files }));
       }
     }
   };
@@ -77,14 +104,10 @@ const TechnicianProfile: React.FC = () => {
       formData.certificates.length > 0
     );
   };
-  console.log('formData', formData.skills)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    alert("Technician profile submitted!");
-    const photoBase64 = formData.photo
-      ? await toBase64(formData.photo)
-      : "";
+    const photoBase64 = formData.photo ? await toBase64(formData.photo) : "";
 
     const certificatesBase64 = await Promise.all(
       formData.certificates.map((cert) => toBase64(cert))
@@ -94,26 +117,70 @@ const TechnicianProfile: React.FC = () => {
         email: formData.email,
         photo: photoBase64,
         certificates: certificatesBase64,
+        skills: formData.skills,
       })
     );
+    Swal.fire({ title: `Profile submitted successfully!`, icon: "success" });
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center mb-8 text-blue-700">
-          Technician Profile
-        </h1>
-        {technician.status === TechnicianStatus.INCOMPLETE && <p className="text-sm text-red-600 mb-4 text-center">
-          * All fields are mandatory.
-        </p>}
-        {technician.status === TechnicianStatus.PENDING_REVIEW && <p className="text-sm text-green-600 mb-4 text-center">
-          Your details are under review right now.
-        </p>}
-        {technician.status === TechnicianStatus.REJECTED && <p className="text-sm text-red-600 mb-4 text-center">
-          Your details were rejected. Please review and re-submit.
-        </p>}
+    <AuthenticatedLayout>
+      <div className="mx-auto bg-white rounded-xl p-8">
+        {technician.status === TechnicianStatus.INCOMPLETE && (
+          <p className="text-sm text-red-600 mb-4 text-center">
+            * All fields are mandatory.
+          </p>
+        )}
+        {technician.status === TechnicianStatus.PENDING_REVIEW && (
+          <p className="text-sm text-green-600 mb-4 text-center">
+            Your details are under review right now.
+          </p>
+        )}
+        {technician.status === TechnicianStatus.REJECTED && (
+          <p className="text-sm text-red-600 mb-4 text-center">
+            Your details were rejected. Please review and re-submit.
+          </p>
+        )}
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Photo Upload */}
+          <div className="relative">
+            <label className="block font-medium text-gray-700 mb-1">
+              Photo <span className="text-red-500">*</span>
+            </label>
+
+            {/* Hidden File Input */}
+            <input
+              type="file"
+              name="photo"
+              accept="image/*"
+              onChange={handleFileChange}
+              id="photo-upload"
+              className="hidden"
+              required
+            />
+
+            {/* Custom Upload Button */}
+            <label
+              htmlFor="photo-upload"
+              className="inline-block cursor-pointer px-4 py-2 absolute bottom-[-4px] left-[58px]"
+            >
+              <FaUpload size={18} />
+            </label>
+
+            {/* Image Preview */}
+            {photoPreview ? (
+              <img
+                src={photoPreview}
+                alt="Photo Preview"
+                className="mt-3 h-20 w-20 object-cover rounded-full border shadow"
+              />
+            ) : (
+              <div className="mt-3 h-20 w-20 object-cover rounded-full border shadow flex justify-center items-center">
+                <FaRegUser size={34} color="gray" />
+              </div>
+            )}
+          </div>
+
           {/* Basic Info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <label className="text-sm font-medium text-gray-700 block mb-1">
@@ -190,32 +257,10 @@ const TechnicianProfile: React.FC = () => {
                     checked={formData.skills.includes(skill)}
                     onChange={() => handleSkillToggle(skill)}
                   />
-                  <span className="text-gray-700">{skill}</span>
+                  <span className="text-gray-700 ml-1.5">{skill}</span>
                 </label>
               ))}
             </div>
-          </div>
-
-          {/* Photo Upload */}
-          <div>
-            <label className="block font-medium text-gray-700 mb-1">
-              Photo <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="file"
-              name="photo"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="w-full text-sm"
-              required
-            />
-            {photoPreview && (
-              <img
-                src={photoPreview}
-                alt="Photo Preview"
-                className="mt-2 h-20 object-cover"
-              />
-            )}
           </div>
 
           {/* Certificates Upload */}
@@ -223,42 +268,79 @@ const TechnicianProfile: React.FC = () => {
             <label className="block font-medium text-gray-700 mb-1">
               Certificates <span className="text-red-500">*</span>
             </label>
+
+            {/* Hidden Input for Style */}
             <input
               type="file"
               name="certificates"
               accept="image/*"
+              id="certificates-upload"
               multiple
               onChange={handleFileChange}
-              className="w-full text-sm"
-              required
+              disabled={certificatePreviews.length >= 3}
+              className="w-full text-sm disabled:opacity-50 hidden"
+              required={certificatePreviews.length === 0}
             />
-            <div className="flex flex-wrap gap-2 mt-2">
+            {certificatePreviews.length < 3 && (
+              <label
+                htmlFor="certificates-upload"
+                className={clsx(
+                  "inline-block px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 text-sm font-semibold rounded-md cursor-pointer transition"
+                )}
+              >
+                Upload certificates
+              </label>
+            )}
+            {certificatePreviews.length === 3 && (
+              <label
+                onClick={() => {
+                  setFormData((prev) => ({ ...prev, certificates: [] }));
+                  setCertificatePreviews([]);
+                }}
+                className={clsx(
+                  "inline-block px-4 py-2 bg-white text-red-500 hover:text-red-800 text-sm font-semibold rounded-md cursor-pointer transition"
+                )}
+              >
+                Clear certificates
+              </label>
+            )}
+
+            {/* Preview */}
+            <div className="flex flex-wrap gap-3 mt-3">
               {certificatePreviews.map((src, idx) => (
-                <img
+                <div
                   key={idx}
-                  src={src}
-                  alt={`Certificate ${idx + 1}`}
-                  className="h-20 object-cover"
-                />
+                  className="relative w-20 h-20 rounded-md overflow-hidden border shadow-sm"
+                >
+                  <img
+                    src={src}
+                    alt={`Certificate ${idx + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               ))}
             </div>
           </div>
 
           {/* Submit */}
-          {technician.status !== TechnicianStatus.PENDING_REVIEW && <button
-            type="submit"
-            disabled={!isFormValid()}
-            className={`w-full py-3 rounded-md text-lg font-semibold transition ${
-              isFormValid()
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            Submit Profile
-          </button>}
+          {technician.status !== TechnicianStatus.APPROVED &&
+            technician.status !== TechnicianStatus.PENDING_REVIEW && (
+              <button
+                type="submit"
+                style={{ color: isFormValid() ? "white" : "#6a7282" }}
+                disabled={!isFormValid()}
+                className={`w-full py-3 rounded-md text-lg font-semibold transition ${
+                  isFormValid()
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                Submit Profile
+              </button>
+            )}
         </form>
       </div>
-    </div>
+    </AuthenticatedLayout>
   );
 };
 

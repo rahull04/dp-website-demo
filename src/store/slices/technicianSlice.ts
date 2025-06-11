@@ -36,6 +36,9 @@ const technicianSlice = createSlice({
       state,
       action: PayloadAction<Omit<Technician, "isVerified">>
     ) => {
+      if(state.technicians.find(c => c.email === action.payload.email)) {
+        throw new Error("Technician already exists");
+      }
       const newTech: Technician = {
         ...action.payload,
         isVerified: false,
@@ -63,20 +66,36 @@ const technicianSlice = createSlice({
       }
     },
     approveTechnician: (state, action: PayloadAction<string>) => {
-      const company = state.technicians.find((c) => c.username === action.payload);
+      const company = state.technicians.find(
+        (c) => c.username === action.payload
+      );
       if (company) {
         company.status = TechnicianStatus.APPROVED;
       }
     },
     rejectTechnician: (state, action: PayloadAction<string>) => {
-      const company = state.technicians.find((c) => c.username === action.payload);
+      const company = state.technicians.find(
+        (c) => c.username === action.payload
+      );
       if (company) {
         company.status = TechnicianStatus.REJECTED;
+      }
+    },
+    verifyTechnician: (state, action: PayloadAction<string>) => {
+      const tech = state.technicians.find((t) => t.email === action.payload);
+      if (tech) {
+        tech.isVerified = true;
       }
     },
   },
 });
 
-export const { registerTechnician, submitTechnicianProfile, approveTechnician, rejectTechnician} = technicianSlice.actions;
+export const {
+  registerTechnician,
+  submitTechnicianProfile,
+  approveTechnician,
+  rejectTechnician,
+  verifyTechnician,
+} = technicianSlice.actions;
 
 export default technicianSlice.reducer;

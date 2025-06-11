@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import type { RootState } from "../store";
 import { login, UserType } from "../store/slices/authSlice";
 import { TechnicianStatus } from "../store/slices/technicianSlice";
+import { Button } from "antd";
 
 const TechnicianLogin: React.FC = () => {
   const [credentials, setCredentials] = useState({
     username: "",
     password: "",
   });
-  const [displayErrorText, setDisplayErrorText] = useState(false);
+  const [displayErrorText, setDisplayErrorText] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -24,12 +25,16 @@ const TechnicianLogin: React.FC = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setDisplayErrorText(false);
+    setDisplayErrorText("Invalid credentials");
     const tech = technicianList.find(
       (c) =>
         c.username === credentials.username &&
         c.password === credentials.password
     );
+    if(tech && !tech.isVerified) {
+      setDisplayErrorText("Email verification is incomplete for your account");
+      return;
+    }
     if (tech) {
       dispatch(
         login({
@@ -45,7 +50,7 @@ const TechnicianLogin: React.FC = () => {
         navigate("/technician/profile");
       }
     } else {
-      setDisplayErrorText(true);
+      setDisplayErrorText("Invalid credentials");
     }
   };
 
@@ -56,35 +61,59 @@ const TechnicianLogin: React.FC = () => {
           Technician Login
         </h2>
         <form onSubmit={handleLogin} className="space-y-4">
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={credentials.username}
-            onChange={handleChange}
-            className="input-style"
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={credentials.password}
-            onChange={handleChange}
-            className="input-style"
-            required
-          />
+          <div>
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Username
+            </label>
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              value={credentials.username}
+              onChange={handleChange}
+              className="input-style"
+              style={{ marginBottom: 12 }}
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={credentials.password}
+              onChange={handleChange}
+              className="input-style"
+              style={{ marginBottom: 12 }}
+              required
+            />
+          </div>
           {displayErrorText && (
-            <p className="text-sm text-red-600 mb-4 text-center">
-              Invalid credentials
+            <p
+              style={{ marginBottom: 4 }}
+              className="text-sm text-red-600 text-center"
+            >
+              {displayErrorText}
             </p>
           )}
-          <button
-            type="submit"
-            className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          <br />
+          <Button
+            style={{ marginBottom: 12 }}
+            htmlType="submit"
+            type="primary"
+            className="w-full py-2"
           >
             Login
-          </button>
+          </Button>
         </form>
       </div>
     </div>

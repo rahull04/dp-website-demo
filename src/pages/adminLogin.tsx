@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login, UserType } from "../store/slices/authSlice";
+import { Button } from "antd";
 
 interface LoginFormData {
   username: string;
@@ -82,16 +83,16 @@ const AdminLogin: React.FC = () => {
             />
           </div>
           {displayErrorText && (
-            <p className="text-sm text-red-600 mb-4 text-center">
+            <p
+              style={{ marginBottom: 4 }}
+              className="text-sm text-red-600 mb-4 text-center"
+            >
               Invalid credentials
             </p>
           )}
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
-          >
+          <Button htmlType="submit" type="primary" className="w-full py-2">
             Login
-          </button>
+          </Button>
         </form>
       </div>
     </div>

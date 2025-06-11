@@ -3,3 +3,8 @@
 .input-style {
   @apply w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500;
 }
+
+.ant-dropdown-menu {
+  min-width: 160px;
+  text-transform: capitalize;
+}

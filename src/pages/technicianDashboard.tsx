@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../store";
 import { Navigate } from "react-router-dom";
 import { TechnicianStatus } from "../store/slices/technicianSlice";
+import { AuthenticatedLayout } from "../components/AuthenticatedLayout";
 
 const TechnicianDashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -20,16 +21,13 @@ const TechnicianDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 px-4 py-8">
+    <AuthenticatedLayout>
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-blue-700">
-            Technician Dashboard
-          </h1>
-          <p className="text-gray-600 mt-1">
+        {jobs.length !== 0 && <div className="mb-8">
+          <p className="text-gray-600 mt-2 text-center">
             Browse and apply for available job postings
           </p>
-        </div>
+        </div>}
 
         {jobs.length === 0 ? (
           <div className="text-center text-gray-500 mt-20">
@@ -53,7 +51,7 @@ const TechnicianDashboard: React.FC = () => {
                         {job.title}
                       </h2>
                     </div>
-                    <p className="text-sm text-gray-600 mb-1 flex items-center" >
+                    <p className="text-sm text-gray-600 mb-1 flex items-center">
                       <img
                         src={company?.logo}
                         alt="Uploaded"
@@ -70,7 +68,8 @@ const TechnicianDashboard: React.FC = () => {
                   </div>
 
                   <button
-                    className="mt-4 bg-blue-600 text-white py-1 px-8 rounded-md hover:bg-blue-700 transition self-start"
+                    style={{ color: "white" }}
+                    className="mt-4 bg-blue-600 py-1 px-8 rounded-md hover:bg-blue-700 transition self-start"
                     onClick={() => {}}
                   >
                     Apply
@@ -81,7 +80,7 @@ const TechnicianDashboard: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </AuthenticatedLayout>
   );
 };
 

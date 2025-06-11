@@ -6,6 +6,8 @@ import './index.css';
 import { Provider } from 'react-redux';
 import { store, persistor } from './store';
 import { PersistGate } from 'redux-persist/integration/react';
+import 'antd/dist/reset.css'; // For Ant Design v5+
+
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

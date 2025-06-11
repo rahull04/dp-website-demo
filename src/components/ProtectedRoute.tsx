@@ -11,7 +11,7 @@ const ProtectedRoute: React.FC<Props> = ({ children }) => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   if (!isAuthenticated) {
-    return <Navigate to="/technician/login" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   return <>{children}</>;

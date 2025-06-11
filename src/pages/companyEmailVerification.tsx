@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { verifyCompany } from '../store/slices/companyListSlice';
 
 const CompanyEmailVerification: React.FC = () => {
   const navigate = useNavigate();
+  const params = useParams();
+  const dispatch = useDispatch();
   const [verified, setVerified] = useState(false);
 
   const handleVerify = () => {
     setVerified(true);
+    if(params.email) {
+      dispatch(verifyCompany(params.email))
+    }
     setTimeout(() => {
       navigate('/company/login');
     }, 2000);
@@ -21,6 +28,7 @@ const CompanyEmailVerification: React.FC = () => {
             <p className="mb-6 text-gray-600">A verification email has been sent to your inbox.</p>
             <button
               onClick={handleVerify}
+              style={{color: "white"}}
               className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
             >
               I have verified

@@ -1,83 +1,98 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Layout, Dropdown, Button, Avatar } from "antd";
+import { DownOutlined, LogoutOutlined } from "@ant-design/icons";
 import type { RootState } from "../store";
 import { logout } from "../store/slices/authSlice";
 
-const Navbar = () => {
-  const { pathname } = useLocation();
-  const dropdownItems = ["admin", "company", "technician"];
+const { Header } = Layout;
 
+const Navbar = () => {
+  const dispatch = useDispatch();
+
+  const userName = useSelector(
+    (state: RootState) => state.auth.user?.username
+  );
+  const userEmail = useSelector(
+    (state: RootState) => state.auth.user?.email
+  );
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
 
-  const dispatch = useDispatch();
+  const dropdownItems = ["admin", "company", "technician"];
 
-  const linkClasses = (path: string) =>
-    `block px-4 py-2 hover:bg-blue-100 capitalize ${
-      pathname.includes(path) ? "bg-blue-50 font-medium" : ""
-    }`;
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("persist:root");
+  };
+
+  const loginMenu = {
+    items: dropdownItems.map((role) => ({
+      key: role,
+      label: <Link to={`/${role}/login`} className="capitalize">{role}</Link>,
+    })),
+  };
+
+  const registerMenu = {
+    items: dropdownItems.slice(1).map((role) => ({
+      key: role,
+      label: <Link to={`/${role}/register`} className="capitalize">{role}</Link>,
+    })),
+  };
+
+  const avatarMenu = {
+    items: [
+      {
+        key: "logout",
+        label: (
+          <Button
+            type="text"
+            icon={<LogoutOutlined />}
+            danger
+            onClick={handleLogout}
+            className="w-full text-left"
+          >
+            Logout
+          </Button>
+        ),
+      },
+    ],
+  };
 
   return (
-    <nav className="bg-white shadow-md px-6 py-4 flex justify-between items-center relative z-50">
-      <Link to="/" className="text-xl font-bold text-blue-700 hover:underline">
+    <Header className="bg-white shadow-md px-8 flex justify-between items-center">
+      <Link to="/home" style={{color: "white"}} className="text-2xl font-bold">
         DP Website
       </Link>
 
-      <div className="flex space-x-6">
-        {/* Login Dropdown */}
+      <div className="flex items-center gap-6">
         {!isAuthenticated && (
-          <div className="relative group">
-            <button className="px-4 py-2 rounded-md text-gray-700 hover:bg-gray-100">
-              Login
-            </button>
-            <div className="absolute top-full right-0 hidden group-hover:block bg-white border rounded-md shadow-lg w-40">
-              {dropdownItems.map((role) => (
-                <Link
-                  key={role}
-                  to={`/${role}/login`}
-                  className={linkClasses(`/login/${role}`)}
-                >
-                  {role}
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Register Dropdown */}
-        {!isAuthenticated && (
-          <div className="relative group">
-            <button className="px-4 py-2 rounded-md text-gray-700 hover:bg-gray-100">
-              Register
-            </button>
-            <div className="absolute top-full right-0 hidden group-hover:block bg-white border rounded-md shadow-lg w-40">
-              {dropdownItems.slice(1).map((role) => (
-                <Link
-                  key={role}
-                  to={`/${role}/register`}
-                  className={linkClasses(`/register/${role}`)}
-                >
-                  {role}
-                </Link>
-              ))}
-            </div>
-          </div>
+          <>
+            <Dropdown menu={loginMenu} trigger={['hover']}>
+              <Button type="text" style={{color: "white"}} className="hover:text-blue-700">
+                Login <DownOutlined />
+              </Button>
+            </Dropdown>
+            <Dropdown menu={registerMenu} trigger={['hover']}>
+              <Button type="text" style={{color: "white"}} className="hover:text-blue-700">
+                Register <DownOutlined />
+              </Button>
+            </Dropdown>
+          </>
         )}
 
         {isAuthenticated && (
-          <div
-            onClick={() => {
-              dispatch(logout());
-              localStorage.removeItem('persist:root');
-            }}
-            className="text-xl font-bold text-blue-700 hover:underline cursor-pointer"
-          >
-            Log out
-          </div>
+          <Dropdown menu={avatarMenu} placement="bottomRight" trigger={["click"]}>
+          <Avatar
+            size="large"
+            className="cursor-pointer hover:ring-2 hover:ring-blue-500"
+            style={{color: "#151617", backgroundColor: "white", fontSize: 20}}
+          >{userEmail?.[0]?.toUpperCase() ?? userName?.[0]?.toUpperCase()}</Avatar>
+        </Dropdown>
         )}
       </div>
-    </nav>
+    </Header>
   );
 };
 

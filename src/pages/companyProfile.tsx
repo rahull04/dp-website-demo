@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store";
 import { CompanyStatus, submitProfile } from "../store/slices/companyListSlice";
 import { base64ToFile, toBase64 } from "../lib/utils/imageUtils";
+import { AuthenticatedLayout } from "../components/AuthenticatedLayout";
+import Swal from "sweetalert2";
 
-const serviceOptions = [
+export const serviceOptions = [
   "Web Design",
   "App Building",
   "CCTV",
@@ -48,6 +50,18 @@ const CompanyProfile: React.FC = () => {
     checkImgs();
   }, [formData?.logo, formData?.img]);
 
+  useEffect(() => {
+    if (formData?.logo) {
+      setLogoPreview(formData.logo);
+    }
+  }, [formData?.logo]);
+
+  useEffect(() => {
+    if (formData?.img) {
+      setImagePreview(formData.img);
+    }
+  }, [formData?.img]);
+
   if (!formData) {
     return null;
   }
@@ -89,8 +103,6 @@ const CompanyProfile: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Profile submitted:", formData);
-    alert("Company profile submitted!");
     const compLogo = formDataLocal.companyLogo
       ? await toBase64(formDataLocal.companyLogo)
       : "";
@@ -107,23 +119,27 @@ const CompanyProfile: React.FC = () => {
         img: compImage,
       })
     );
+    Swal.fire({ title: `Profile submitted successfully!`, icon: "success" });
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center mb-8 text-blue-700">
-          Company Profile
-        </h1>
-        {formData.status === CompanyStatus.INCOMPLETE && <p className="text-sm text-red-600 mb-4 text-center">
-          * All fields are mandatory including service types and file uploads.
-        </p>}
-        {formData.status === CompanyStatus.PENDING_REVIEW && <p className="text-sm text-green-600 mb-4 text-center">
-          Your company details are under review right now.
-        </p>}
-        {formData.status === CompanyStatus.REJECTED && <p className="text-sm text-red-600 mb-4 text-center">
-          Your company details were rejected. Please review and re-submit.
-        </p>}
+    <AuthenticatedLayout>
+      <div className=" mx-auto bg-white rounded-xl p-8">
+        {formData.status === CompanyStatus.INCOMPLETE && (
+          <p className="text-lg text-red-600 mb-4 text-center">
+            * All fields are mandatory including service types and file uploads.
+          </p>
+        )}
+        {formData.status === CompanyStatus.PENDING_REVIEW && (
+          <p className="text-green-600 mb-4 text-center text-lg">
+            Your company details are under review right now.
+          </p>
+        )}
+        {formData.status === CompanyStatus.REJECTED && (
+          <p className="text-lg text-red-600 mb-4 text-center">
+            Your company details were rejected. Please review and re-submit.
+          </p>
+        )}
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -226,69 +242,83 @@ const CompanyProfile: React.FC = () => {
                     checked={formDataLocal?.serviceTypes?.includes(service)}
                     onChange={() => handleCheckboxChange(service)}
                   />
-                  <span className="text-gray-700">{service}</span>
+                  <span className="text-gray-700 ml-1.5">{service}</span>
                 </label>
               ))}
             </div>
           </div>
 
           {/* File Uploads with Preview */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block font-medium text-gray-700 mb-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Company Logo Upload */}
+            <div className="flex flex-col space-y-2">
+              <label className="text-sm font-medium text-gray-700">
                 Company Logo <span className="text-red-500">*</span>
               </label>
-              <input
-                type="file"
-                name="companyLogo"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="w-full text-sm"
-              />
-              {logoPreview && (
-                <img
-                  src={logoPreview}
-                  alt="Logo Preview"
-                  className="mt-2 h-20 object-contain"
+              <div className="border border-dashed border-gray-300 rounded-md p-4 bg-gray-50 hover:bg-gray-100 transition">
+                <input
+                  type="file"
+                  name="companyLogo"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="w-full text-sm text-gray-600 cursor-pointer"
                 />
-              )}
+                {logoPreview && (
+                  <div className="mt-3 flex justify-center">
+                    <img
+                      src={logoPreview}
+                      alt="Logo Preview"
+                      className="h-24 w-auto object-contain border rounded shadow-sm"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
-            <div>
-              <label className="block font-medium text-gray-700 mb-1">
+
+            {/* Company Image Upload */}
+            <div className="flex flex-col space-y-2">
+              <label className="text-sm font-medium text-gray-700">
                 Company Image <span className="text-red-500">*</span>
               </label>
-              <input
-                type="file"
-                name="companyImage"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="w-full text-sm"
-              />
-              {imagePreview && (
-                <img
-                  src={imagePreview}
-                  alt="Image Preview"
-                  className="mt-2 h-20 object-cover"
+              <div className="border border-dashed border-gray-300 rounded-md p-4 bg-gray-50 hover:bg-gray-100 transition">
+                <input
+                  type="file"
+                  name="companyImage"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="w-full text-sm text-gray-600 cursor-pointer"
                 />
-              )}
+                {imagePreview && (
+                  <div className="mt-3 flex justify-center">
+                    <img
+                      src={imagePreview}
+                      alt="Image Preview"
+                      className="h-24 w-auto object-cover border rounded shadow-sm"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Submit Button */}
-          {formData.status !== CompanyStatus.PENDING_REVIEW && <button
-            type="submit"
-            disabled={!isFormValid}
-            className={`w-full py-3 rounded-md text-lg font-semibold transition ${
-              isFormValid
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            Submit Profile
-          </button>}
+          {formData.status !== CompanyStatus.APPROVED && formData.status !== CompanyStatus.PENDING_REVIEW && (
+            <button
+              type="submit"
+              disabled={!isFormValid}
+              style={{ color: isFormValid ? "white" : "#6a7282" }}
+              className={`w-full py-3 rounded-md text-lg font-semibold transition cursor-pointer ${
+                isFormValid
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              Submit Profile
+            </button>
+          )}
         </form>
       </div>
-    </div>
+    </AuthenticatedLayout>
   );
 };
 

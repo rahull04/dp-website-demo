@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
 import CompanyRegister from "./pages/companyRegister";
 import CompanyLogin from "./pages/companyLogin";
-import Navbar from "./components/navbar";
 import AdminLogin from "./pages/adminLogin";
 import AdminDashboard from "./pages/adminDashboard";
 import CompanyEmailVerification from "./pages/companyEmailVerification";
@@ -15,23 +14,26 @@ import TechnicianEmailVerification from "./pages/technicianEmailVerification";
 import TechnicianLogin from "./pages/technicianLogin";
 import TechnicianProfile from "./pages/technicianProfile";
 import TechnicianDashboard from "./pages/technicianDashboard";
+import Navbar from "./components/navbar";
+import { useSelector } from "react-redux";
+import type { RootState } from "./store";
 
 function App() {
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
   return (
     <Router>
-      <Navbar />
-
+      {!isAuthenticated && <Navbar />}
       <Routes>
         <Route
-          path="/"
+          path="/home"
           element={
-            <ProtectedRoute>
               <Home />
-            </ProtectedRoute>
           }
         />
         <Route
-          path="/company/email-verification"
+          path="/company/email-verification/:email"
           element={<CompanyEmailVerification />}
         />
         <Route
@@ -74,7 +76,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/technician/email-verification" element={<TechnicianEmailVerification />} />
+        <Route path="/technician/email-verification/:email" element={<TechnicianEmailVerification />} />
         <Route path="/technician/login" element={<TechnicianLogin />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/company/register" element={<CompanyRegister />} />

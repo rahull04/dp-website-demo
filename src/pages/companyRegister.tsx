@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { CompanyStatus, registerCompany } from "../store/slices/companyListSlice";
 import { generateRandomId } from "../lib/utils/idGenerator";
+import { Button } from "antd";
 
 interface RegisterFormData {
   username: string;
@@ -49,7 +50,7 @@ const CompanyRegister: React.FC = () => {
           status: CompanyStatus.INCOMPLETE
         })
       );
-      navigate("/company/email-verification");
+      navigate(`/company/email-verification/${encodeURIComponent(formData.email)}`);
     }, 500);
   };
 
@@ -57,7 +58,7 @@ const CompanyRegister: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-xl bg-white p-8 rounded-xl shadow-lg">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Company User Registration
+          Company Registration
         </h2>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
@@ -65,7 +66,7 @@ const CompanyRegister: React.FC = () => {
               htmlFor="username"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Username
+              Username <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -84,7 +85,7 @@ const CompanyRegister: React.FC = () => {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Password
+              Password <span className="text-red-500">*</span>
             </label>
             <input
               type="password"
@@ -103,7 +104,7 @@ const CompanyRegister: React.FC = () => {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Email
+              Email <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
@@ -122,7 +123,7 @@ const CompanyRegister: React.FC = () => {
               htmlFor="phone"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Phone
+              Phone <span className="text-red-500">*</span>
             </label>
             <input
               type="tel"
@@ -141,7 +142,7 @@ const CompanyRegister: React.FC = () => {
               htmlFor="companyName"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Company Name
+              Company Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -160,7 +161,7 @@ const CompanyRegister: React.FC = () => {
               htmlFor="companyAddress"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Company Address
+              Company Address <span className="text-red-500">*</span>
             </label>
             <textarea
               name="companyAddress"
@@ -174,12 +175,14 @@ const CompanyRegister: React.FC = () => {
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
+          <Button
+            style={{ marginBottom: 12 }}
+            htmlType="submit"
+            type="primary"
+            className="w-full py-2"
           >
             Register
-          </button>
+          </Button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-500">
           Already have an account?{" "}

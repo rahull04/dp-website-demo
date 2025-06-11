@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { registerTechnician, TechnicianStatus } from "../store/slices/technicianSlice";
+import {
+  registerTechnician,
+  TechnicianStatus,
+} from "../store/slices/technicianSlice";
+import { Button } from "antd";
 
 const TechnicianRegister: React.FC = () => {
+  const [displayErrorText, setDisplayErrorText] = useState("");
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -23,20 +28,24 @@ const TechnicianRegister: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(
+    try {
+      dispatch(
         registerTechnician({
           username: formData.username,
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
           status: TechnicianStatus.INCOMPLETE,
-          address: formData.address
+          address: formData.address,
         })
       );
-      navigate("/technician/email-verification");
+      navigate(
+        `/technician/email-verification/${encodeURIComponent(formData.email)}`
+      );
+    } catch (e: unknown) {
+      setDisplayErrorText((e as { message: string }).message);
+    }
   };
-
-  const isFormValid = Object.values(formData).every((val) => val.trim() !== "");
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
@@ -45,59 +54,113 @@ const TechnicianRegister: React.FC = () => {
           Technician Registration
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            name="username"
-            type="text"
-            placeholder="Username"
-            value={formData.username}
-            onChange={handleChange}
-            className="input-style"
-            required
-          />
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            className="input-style"
-            required
-          />
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            className="input-style"
-            required
-          />
-          <input
-            name="phone"
-            type="tel"
-            placeholder="Phone"
-            value={formData.phone}
-            onChange={handleChange}
-            className="input-style"
-            required
-          />
-          <textarea
-            name="address"
-            placeholder="Address"
-            value={formData.address}
-            onChange={handleChange}
-            className="input-style"
-            required
-          />
-          <button
-            type="submit"
-            disabled={!isFormValid}
-            className={`w-full py-2 text-white font-semibold rounded-md ${
-              isFormValid ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400 cursor-not-allowed"
-            } transition`}
+          <div>
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Username <span className="text-red-500">*</span>
+            </label>
+            <input
+              name="username"
+              type="text"
+              style={{ marginBottom: 8 }}
+              placeholder="Username"
+              value={formData.username}
+              onChange={handleChange}
+              className="input-style"
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Email <span className="text-red-500">*</span>
+            </label>
+            <input
+              name="email"
+              type="email"
+              style={{ marginBottom: 8 }}
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              className="input-style"
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Phone <span className="text-red-500">*</span>
+            </label>
+            <input
+              name="phone"
+              type="tel"
+              style={{ marginBottom: 8 }}
+              placeholder="Phone"
+              value={formData.phone}
+              onChange={handleChange}
+              className="input-style"
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="address"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Address <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              name="address"
+              style={{ marginBottom: 8 }}
+              placeholder="Address"
+              value={formData.address}
+              onChange={handleChange}
+              className="input-style"
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Password <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              className="input-style"
+              style={{ marginBottom: 12 }}
+              required
+            />
+          </div>
+
+          {displayErrorText && (
+            <p
+              style={{ marginBottom: 4 }}
+              className="text-sm text-red-600 text-center"
+            >
+              {displayErrorText}
+            </p>
+          )}
+          <br />
+          <Button
+            style={{ marginBottom: 8 }}
+            htmlType="submit"
+            type="primary"
+            className="w-full py-2"
           >
             Register
-          </button>
+          </Button>
         </form>
       </div>
     </div>
