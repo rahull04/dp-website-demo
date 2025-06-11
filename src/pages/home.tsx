@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { logout } from "../store/slices/authSlice";
 
 const Home: React.FC = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(logout());
+    localStorage.removeItem("persist:root");
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4">
       <h1 className="text-4xl font-bold text-[#5D87FF] mb-2">
