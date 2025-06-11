@@ -5,9 +5,9 @@ import { DownOutlined, LogoutOutlined } from "@ant-design/icons";
 import type { RootState } from "../store";
 import { logout } from "../store/slices/authSlice";
 
-const { Header } = Layout;
+const { Header: HeaderComp } = Layout;
 
-export const Navbar = () => {
+export const Header = () => {
   const dispatch = useDispatch();
 
   const userName = useSelector((state: RootState) => state.auth.user?.username);
@@ -64,7 +64,7 @@ export const Navbar = () => {
   };
 
   return (
-    <Header
+    <HeaderComp
       style={{ backgroundColor: "white", color: "black" }}
       className="bg-white shadow-md px-8 flex justify-between items-center"
     >
@@ -120,6 +120,6 @@ export const Navbar = () => {
           </Dropdown>
         )}
       </div>
-    </Header>
+    </HeaderComp>
   );
 };

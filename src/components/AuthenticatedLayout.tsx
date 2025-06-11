@@ -8,7 +8,7 @@ import { MdDashboard } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { Breadcrumb } from "antd";
 import { CompanyStatus } from "../store/slices/companyListSlice";
-import {Navbar} from "./Navbar";
+import { Header } from "./Header";
 
 const MENU_ITEMS = [
   {
@@ -81,7 +81,7 @@ export const AuthenticatedLayout = ({
   return (
     <div className="flex flex-col h-screen">
       <div className="h-[60px] flex-shrink-0">
-        <Navbar />
+        <Header />
       </div>
 
       <div className="flex flex-1 overflow-hidden">

@@ -12,11 +12,11 @@ import TechnicianEmailVerification from "./pages/Technician/technicianEmailVerif
 import TechnicianLogin from "./pages/Technician/technicianLogin";
 import TechnicianProfile from "./pages/Technician/technicianProfile";
 import TechnicianDashboard from "./pages/Technician/technicianDashboard";
-import {Navbar} from "./components/Navbar";
 import { useSelector } from "react-redux";
 import type { RootState } from "./store";
 import AdminDashboard from "./pages/Admin/adminDashboard";
 import AdminLogin from "./pages/Admin/adminLogin";
+import { Header } from "./components/Header";
 
 function App() {
   const isAuthenticated = useSelector(
@@ -24,7 +24,7 @@ function App() {
   );
   return (
     <Router>
-      {!isAuthenticated && <Navbar />}
+      {!isAuthenticated && <Header />}
       <Routes>
         <Route
           path="/home"
